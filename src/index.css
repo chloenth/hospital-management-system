@@ -1,11 +1,43 @@
 @import 'tailwindcss';
 
 @theme {
-  --width-inner: 1024px;
+  --font-display: 'Poppins', serif;
+  --width-inner: 650px;
+  --footer-height: 60px;
+}
+
+@layer base {
+  body {
+    @apply font-display;
+  }
 }
 
 @layer components {
   .footer-link {
     @apply block px-0.5 py-1 hover:underline hover:underline-offset-2;
+  }
+
+  .form-label {
+    @apply text-base block mb-2 mt-8;
+  }
+
+  .form-input {
+    @apply block border border-gray-400 rounded-xl w-full p-3 outline-none;
+  }
+
+  .link-underline {
+    @apply underline underline-offset-2 decoration-1;
+  }
+
+  .btn {
+    @apply w-full py-3.5 border border-gray-300 rounded-4xl mt-8 text-xl font-medium;
+  }
+
+  .btn.disabled {
+    @apply bg-[#c3c3c3] text-white;
+  }
+
+  .btn.active {
+    @apply border-black text-lg tracking-wide;
   }
 }

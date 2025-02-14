@@ -3,7 +3,7 @@ import Footer from './Footer';
 
 const AuthLayout = ({ children }) => {
   return (
-    <div>
+    <div className='min-h-screen pb-[var(--footer-height)] flex justify-center items-center'>
       {children}
       <Footer />
     </div>
