@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+@layer components {
+  .header {
+    @apply text-6xl text-red-400;
+  }
+}
