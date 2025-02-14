@@ -1,7 +1,11 @@
 @import 'tailwindcss';
 
+@theme {
+  --width-inner: 1024px;
+}
+
 @layer components {
-  .header {
-    @apply text-6xl text-red-400;
+  .footer-link {
+    @apply block px-0.5 py-1 hover:underline hover:underline-offset-2;
   }
 }
