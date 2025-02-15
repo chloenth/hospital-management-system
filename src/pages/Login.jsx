@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useContext, useState } from 'react';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AuthContext } from '~/context/AuthContext';
 
 const Login = () => {
+  const { setIsAuthenticated } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -20,6 +23,8 @@ const Login = () => {
     e.preventDefault();
     console.log('username: ', formData.username);
     console.log('password: ', formData.password);
+    console.log(setIsAuthenticated);
+    setIsAuthenticated(true);
   };
 
   return (
@@ -95,6 +100,10 @@ const Login = () => {
       <button className='btn active'>Create an account</button> */}
     </div>
   );
+};
+
+Login.propTypes = {
+  setIsAuthenticated: PropTypes.func.isRequired,
 };
 
 export default Login;
