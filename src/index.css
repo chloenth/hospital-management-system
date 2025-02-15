@@ -42,14 +42,20 @@
   }
 
   .sidebar-link {
-    @apply text-base flex items-center py-2.5 pl-4 rounded-3xl hover:text-[#1E3A8A] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200;
+    @apply text-base flex items-center py-2.5 pl-4 rounded-3xl hover:text-[#1E3A8A];
   }
 
   .sidebar-link + .sidebar-link {
-    @apply mt-5;
+    @apply mt-6;
   }
 
   .sidebar-link.active {
-    @apply bg-[#e9eaef] text-[#1E3A8A];
+    @apply bg-[#e9eaef] text-[#1E3A8A] drop-shadow-md;
+  }
+}
+
+@layer utilities {
+  .click-effect {
+    @apply hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200;
   }
 }

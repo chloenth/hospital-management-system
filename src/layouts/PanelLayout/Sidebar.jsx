@@ -14,27 +14,27 @@ const Sidebar = () => {
     <div className='p-5 min-h-screen'>
       <Logo />
       <div className='flex flex-col mt-12 text-[#878c9e] font-medium'>
-        <Link className='sidebar-link active'>
+        <Link className='sidebar-link click-effect active'>
           <FontAwesomeIcon icon={faTableCellsLarge} className='text-xl mr-2' />
           <span className='flex-1'>Dashboard</span>
         </Link>
 
-        <Link className='sidebar-link'>
+        <Link className='sidebar-link click-effect'>
           <FontAwesomeIcon icon={faSquareCheck} className='text-xl mr-2' />
           <span className='flex-1'>Appointments</span>
         </Link>
 
-        <Link className='sidebar-link'>
+        <Link className='sidebar-link click-effect'>
           <FontAwesomeIcon icon={faUserGroup} className='text-xl mr-2' />
           <span className='flex-1'>Patients</span>
         </Link>
 
-        <Link className='sidebar-link'>
+        <Link className='sidebar-link click-effect'>
           <FontAwesomeIcon icon={faCalendar} className='text-xl mr-2' />
           <span className='flex-1'>Schedule</span>
         </Link>
 
-        <Link className='sidebar-link'>
+        <Link className='sidebar-link click-effect'>
           <FontAwesomeIcon icon={faCapsules} className='text-xl mr-2' />
           <span className='flex-1'>Medication</span>
         </Link>
