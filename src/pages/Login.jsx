@@ -80,11 +80,7 @@ const Login = () => {
             required
             onChange={handleChange}
           />
-          <button
-            className={`btn ${
-              isFormValid ? 'active' : 'disabled'
-            } transition-all duration-300`}
-          >
+          <button className={`btn ${isFormValid ? 'active' : 'disabled'}`}>
             Log in
           </button>
         </form>

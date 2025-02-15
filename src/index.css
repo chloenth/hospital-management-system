@@ -30,7 +30,7 @@
   }
 
   .btn {
-    @apply w-full py-2 sm:py-3.5 border border-gray-300 rounded-4xl mt-8 text-base sm:text-xl font-medium;
+    @apply w-full py-2 sm:py-3.5 border border-gray-300 rounded-4xl mt-8 text-base sm:text-xl font-medium transition-all duration-300;
   }
 
   .btn.disabled {
@@ -39,5 +39,17 @@
 
   .btn.active {
     @apply border-black text-lg tracking-wide hover:cursor-pointer hover:-translate-y-0.5 hover:shadow-md active:translate-y-0;
+  }
+
+  .sidebar-link {
+    @apply text-base flex items-center py-2.5 pl-4 rounded-3xl hover:text-[#1E3A8A] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200;
+  }
+
+  .sidebar-link + .sidebar-link {
+    @apply mt-5;
+  }
+
+  .sidebar-link.active {
+    @apply bg-[#e9eaef] text-[#1E3A8A];
   }
 }

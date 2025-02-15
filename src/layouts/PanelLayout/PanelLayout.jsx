@@ -1,12 +1,21 @@
+import PropTypes from 'prop-types';
 import Sidebar from './Sidebar';
+import Header from './Header';
 
-const PanelLayout = () => {
+const PanelLayout = ({ children }) => {
   return (
-    <div>
+    <div className='flex'>
       <Sidebar />
-      <div> </div>
+      <div className='flex-1 bg-[#fafafb] rounded-3xl m-4'>
+        <Header />
+        {children}
+      </div>
     </div>
   );
+};
+
+PanelLayout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default PanelLayout;
