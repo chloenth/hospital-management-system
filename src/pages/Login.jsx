@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AuthContext } from '~/context/AuthContext';
+import * as authService from '~/services/authService';
+import config from '~/config';
 
 const Login = () => {
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -11,6 +14,7 @@ const Login = () => {
     username: '',
     password: '',
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,12 +23,22 @@ const Login = () => {
   const isFormValid =
     formData.username.trim() !== '' && formData.password.trim() !== '';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('username: ', formData.username);
-    console.log('password: ', formData.password);
-    console.log(setIsAuthenticated);
-    setIsAuthenticated(true);
+
+    try {
+      const response = await authService.logIn(formData);
+      if (!response) {
+        navigate('login');
+      }
+      setIsAuthenticated(true);
+      const role = response.result.roles[0].name;
+      if (role === config.roles.ADMIN) {
+        navigate('/admin');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
