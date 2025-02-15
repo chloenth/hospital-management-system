@@ -14,15 +14,15 @@
 
 @layer components {
   .footer-link {
-    @apply block px-0.5 py-1 hover:underline hover:underline-offset-2;
+    @apply block px-0.5 py-2 py-1 hover:underline hover:underline-offset-2;
   }
 
   .form-label {
-    @apply text-base block mb-2 mt-8;
+    @apply text-sm sm:text-base block mb-2 mt-8;
   }
 
   .form-input {
-    @apply block border border-gray-400 rounded-xl w-full p-3 outline-none;
+    @apply block border border-gray-400 rounded-xl w-full p-2 sm:p-3 outline-none;
   }
 
   .link-underline {
@@ -30,7 +30,7 @@
   }
 
   .btn {
-    @apply w-full py-3.5 border border-gray-300 rounded-4xl mt-8 text-xl font-medium;
+    @apply w-full py-2 sm:py-3.5 border border-gray-300 rounded-4xl mt-8 text-base sm:text-xl font-medium;
   }
 
   .btn.disabled {

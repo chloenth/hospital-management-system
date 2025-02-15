@@ -1,5 +1,12 @@
+import Sidebar from './Sidebar';
+
 const PanelLayout = () => {
-  return <div>PanelLayout</div>;
+  return (
+    <div>
+      <Sidebar />
+      <div> </div>
+    </div>
+  );
 };
 
 export default PanelLayout;

@@ -42,10 +42,10 @@ const Login = () => {
   };
 
   return (
-    <div className='w-inner'>
-      <div className='border border-gray-300 rounded-4xl px-14 py-8'>
-        <h3 className='text-3xl text-center font-medium'>Sign In</h3>
-        <form className='text-gray-600 mt-12' onSubmit={handleSubmit}>
+    <div className='w-full md:w-[650px] mx-auto'>
+      <div className='h-min xl:border xl:border-gray-300 xl:rounded-4xl px-6 sm:px-16 md:px-14 py-6 sm:py-8'>
+        <h3 className='text-xl sm:text-3xl text-center font-medium'>Sign In</h3>
+        <form className='text-gray-600 mt-1 sm:mt-12' onSubmit={handleSubmit}>
           <label htmlFor='username' className='form-label'>
             Your Username
           </label>
@@ -66,7 +66,9 @@ const Login = () => {
               onClick={() => setShowPassword(!showPassword)}
             >
               <FontAwesomeIcon icon={faEyeSlash} />
-              <span className='text-[15px] ml-1 tracking-wider'>Hide</span>
+              <span className='text-sm sm:text-[15px] ml-1 tracking-wider'>
+                Hide
+              </span>
             </button>
           </label>
           <input
@@ -86,7 +88,7 @@ const Login = () => {
             Log in
           </button>
         </form>
-        <p className='text-base tracking-wide text-center mt-4 text-[#333]'>
+        <p className='text-sm sm:text-base tracking-wide text-center mt-4 text-[#333]'>
           By continuing, you agree to the{' '}
           <a href='' className='link-underline'>
             Terms of use
@@ -96,8 +98,8 @@ const Login = () => {
             Privacy Policy.
           </a>
         </p>
-        <div className='mt-8 flex justify-between text-[#333]'>
-          <a href='' className='link-underline'>
+        <div className='text-sm sm:text-base mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between text-[#333]'>
+          <a href='' className='link-underline py-2'>
             Other issue with sign in
           </a>
           <a href='' className='link-underline'>

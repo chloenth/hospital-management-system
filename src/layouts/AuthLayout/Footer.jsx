@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
-    <footer className='fixed bottom-0 inset-x-0 border-t border-solid border-gray-300'>
-      <div className='text-sm flex justify-around text-gray-500 items-center w-inner h-[60px] m-auto'>
+    <footer className='md:absolute md:inset-x-0 md:bottom-0 w-full border-t border-solid border-gray-300'>
+      <div className='text-xs sm:text-sm flex flex-col sm:flex-row justify-around text-gray-500 items-center w-full sm:w-inner min-h-[60px] m-auto py-2 sm:py-0'>
         <a href='' className='footer-link'>
           Help Center
         </a>
@@ -11,7 +11,7 @@ const Footer = () => {
         <a href='' className='footer-link'>
           Privacy Policy
         </a>
-        <p>&copy;2025 Huong Nguyen. All rights reserved.</p>
+        <p className='py-2'>&copy;2025 Huong Nguyen. All rights reserved.</p>
       </div>
     </footer>
   );
