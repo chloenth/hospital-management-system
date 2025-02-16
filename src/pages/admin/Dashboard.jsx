@@ -1,5 +1,12 @@
 import { Button } from '@/components/ui/button';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
   Card,
   CardContent,
   CardDescription,
@@ -7,10 +14,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
+  faArrowRight,
   faArrowTrendDown,
   faArrowTrendUp,
   faCalendarCheck,
+  faEllipsis,
   faFileLines,
   faUserGroup,
   faUserPlus,
@@ -21,6 +31,9 @@ import {
   Bar,
   LineChart,
   Line,
+  PieChart,
+  Pie,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
@@ -83,6 +96,20 @@ const dataLineChart = [
   { name: 'Thu', Income: 800, Expense: 546 },
   { name: 'Fri', Income: 1328, Expense: 391 },
   { name: 'Sat', Income: 782, Expense: 1198 },
+];
+
+const data = [
+  { name: 'Emergency Medicine', value: 300 },
+  { name: 'General Medicine', value: 400 },
+  { name: 'Internal Medicine', value: 150 },
+  { name: 'Other Departments', value: 450 },
+];
+
+const COLORS = [
+  '#243956',
+  'var(--color-cyan-200)',
+  'var(--color-sky-400)',
+  'var(--color-green-200)',
 ];
 
 const Dashboard = () => {
@@ -218,7 +245,7 @@ const Dashboard = () => {
             <ResponsiveContainer width='100%' height={300}>
               <LineChart
                 data={dataLineChart}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis dataKey='name' />
@@ -255,15 +282,289 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <div>
-          {/* Patient Overview */}
-          <div>Patient Overview</div>
+        <div className='col-span-4 grid grid-cols-3 gap-5'>
+          {/* Patient Overview by Departments - pie chart */}
+          <Card>
+            <CardHeader className='pb-0'>
+              <CardTitle className='text-lg'>Patient Overview</CardTitle>
+              <CardDescription>by Departments</CardDescription>
+            </CardHeader>
+            <CardContent className='pt-0'>
+              <ResponsiveContainer width='100%' height={400}>
+                <PieChart width={400} height={400}>
+                  <Pie
+                    data={data}
+                    dataKey='value'
+                    nameKey='name'
+                    cx='50%'
+                    cy='50%'
+                    outerRadius={120} // Grow effect on hover
+                    innerRadius={70} // Creates the donut effect
+                  >
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    cursor={{ fill: '#eee' }}
+                    contentStyle={{
+                      backgroundColor: 'var(--color-blue-200)', // Change tooltip background color based on hover state
+                      color: 'var(--color-black)',
+                      borderRadius: '5px',
+                      border: 'none',
+                      boxShadow: 'var(--shadow-sm)',
+                      padding: '10px',
+                    }}
+                    labelStyle={{
+                      fontWeight: 'bold', // Adjust label font styling if needed
+                      fontSize: '15px', // Change label font size
+                    }}
+                    itemStyle={{
+                      color: 'var(--color-slate-700)', // Customize the individual item's text color
+                      fontSize: '13px', // Customize the item text size
+                    }}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
           {/* Doctor Schedule */}
-          <div>Doctor Schedule</div>
+          <Card>
+            <CardHeader className='flex-row justify-between'>
+              <CardTitle className='text-lg'>Doctors Schedule</CardTitle>
+              <DropdownMenu>
+                <DropdownMenuTrigger className='focus:outline-none hover:cursor-pointer'>
+                  <FontAwesomeIcon icon={faEllipsis} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='absolute -right-4 -top-2'>
+                  <DropdownMenuItem className='hover:cursor-pointer'>
+                    Available
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className='hover:cursor-pointer'>
+                    Unavailable
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </CardHeader>
+            <CardContent>
+              <ul>
+                <li className='flex py-5 border-b border-gray-200'>
+                  <Avatar>
+                    <AvatarImage src='https://github.com/shadcn.png' />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-1 justify-between ml-3'>
+                    <p className='text-base font-medium'>
+                      Dr.Petra Winsburry{' '}
+                      <span className='block text-xs text-gray-500'>
+                        General Medicine
+                      </span>
+                    </p>
+                    <div className='text-end'>
+                      <Badge
+                        variant='outline'
+                        className='bg-[#E0F8FA] text-[#52687D]'
+                      >
+                        Available
+                      </Badge>
+                      <p className='text-xs text-gray-500'>
+                        09:00 AM - 12:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </li>
+
+                <li className='flex py-5 border-b border-gray-200'>
+                  <Avatar>
+                    <AvatarImage src='https://github.com/shadcn.png' />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-1 justify-between ml-3'>
+                    <p className='text-base font-medium'>
+                      Dr.Petra Winsburry{' '}
+                      <span className='block text-xs text-gray-500'>
+                        General Medicine
+                      </span>
+                    </p>
+                    <div className='text-end'>
+                      <Badge
+                        variant='outline'
+                        className='bg-[#FEF4F3] text-[#FD6E72] border-red-300'
+                      >
+                        Unavailable
+                      </Badge>
+                      <p className='text-xs text-gray-500'>
+                        09:00 AM - 12:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </li>
+
+                <li className='flex py-5 border-b border-gray-200'>
+                  <Avatar>
+                    <AvatarImage src='https://github.com/shadcn.png' />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-1 justify-between ml-3'>
+                    <p className='text-base font-medium'>
+                      Dr.Petra Winsburry{' '}
+                      <span className='block text-xs text-gray-500'>
+                        General Medicine
+                      </span>
+                    </p>
+                    <div className='text-end'>
+                      <Badge
+                        variant='outline'
+                        className='bg-[#E0F8FA] text-[#52687D]'
+                      >
+                        Available
+                      </Badge>
+                      <p className='text-xs text-gray-500'>
+                        09:00 AM - 12:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </li>
+
+                <li className='flex py-5 border-b border-gray-200'>
+                  <Avatar>
+                    <AvatarImage src='https://github.com/shadcn.png' />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-1 justify-between ml-3'>
+                    <p className='text-base font-medium'>
+                      Dr.Petra Winsburry{' '}
+                      <span className='block text-xs text-gray-500'>
+                        General Medicine
+                      </span>
+                    </p>
+                    <div className='text-end'>
+                      <Badge
+                        variant='outline'
+                        className='bg-[#E0F8FA] text-[#52687D]'
+                      >
+                        Available
+                      </Badge>
+                      <p className='text-xs text-gray-500'>
+                        09:00 AM - 12:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </li>
+
+                <li className='flex py-5'>
+                  <Avatar>
+                    <AvatarImage src='https://github.com/shadcn.png' />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-1 justify-between ml-3'>
+                    <p className='text-base font-medium'>
+                      Dr.Petra Winsburry{' '}
+                      <span className='block text-xs text-gray-500'>
+                        General Medicine
+                      </span>
+                    </p>
+                    <div className='text-end'>
+                      <Badge
+                        variant='outline'
+                        className='bg-[#FEF4F3] text-[#FD6E72] border-red-300'
+                      >
+                        Unavailable
+                      </Badge>
+                      <p className='text-xs text-gray-500'>
+                        09:00 AM - 12:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
 
           {/* Report */}
-          <div>Report</div>
+          <Card>
+            <CardHeader className='flex-row justify-between pb-5'>
+              <CardTitle className='text-lg flex items-center mb-0'>
+                Report
+              </CardTitle>
+              <Button variant='outline' className='hover:cursor-pointer'>
+                View All
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <ul>
+                <li className='flex justify-between items-center mt-4 py-3 px-6 rounded-xl bg-gray-100 border-b border-gray-200'>
+                  <p>
+                    Equipment Maintenance{' '}
+                    <span className='block text-sm text-gray-500'>
+                      1 minute ago
+                    </span>
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className='p-1 hover:cursor-pointer'
+                  />
+                </li>
+
+                <li className='flex justify-between items-center mt-4 py-3 px-6 rounded-xl bg-gray-100 border-b border-gray-200'>
+                  <p>
+                    Equipment Maintenance{' '}
+                    <span className='block text-sm text-gray-500'>
+                      1 minute ago
+                    </span>
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className='p-1 hover:cursor-pointer'
+                  />
+                </li>
+
+                <li className='flex justify-between items-center mt-4 py-3 px-6 rounded-xl bg-gray-100 border-b border-gray-200'>
+                  <p>
+                    Equipment Maintenance{' '}
+                    <span className='block text-sm text-gray-500'>
+                      1 minute ago
+                    </span>
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className='p-1 hover:cursor-pointer'
+                  />
+                </li>
+
+                <li className='flex justify-between items-center mt-4 py-3 px-6 rounded-xl bg-gray-100 border-b border-gray-200'>
+                  <p>
+                    Equipment Maintenance{' '}
+                    <span className='block text-sm text-gray-500'>
+                      1 minute ago
+                    </span>
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className='p-1 hover:cursor-pointer'
+                  />
+                </li>
+
+                <li className='flex justify-between items-center mt-4 py-3 px-6 rounded-xl bg-gray-100 border-b border-gray-200'>
+                  <p>
+                    System Issue{' '}
+                    <span className='block text-sm text-gray-500'>
+                      1 minute ago
+                    </span>
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className='p-1 hover:cursor-pointer'
+                  />
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Patient Appointment */}
