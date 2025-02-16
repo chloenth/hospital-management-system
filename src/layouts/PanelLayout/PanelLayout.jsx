@@ -6,7 +6,7 @@ const PanelLayout = ({ children }) => {
   return (
     <div className='flex'>
       <Sidebar />
-      <div className='flex-1 bg-[#fafafb] rounded-3xl m-4'>
+      <div className='flex-1 bg-[#fafafb] rounded-3xl m-4 px-6'>
         <Header />
         {children}
       </div>

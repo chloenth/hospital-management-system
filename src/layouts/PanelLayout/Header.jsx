@@ -9,7 +9,7 @@ import images from '~/assets/images';
 
 const Header = () => {
   return (
-    <div className='py-6 px-10 flex justify-between'>
+    <div className='py-6 flex justify-between items-center'>
       <div className='relative'>
         <FontAwesomeIcon
           icon={faMagnifyingGlass}
@@ -30,7 +30,7 @@ const Header = () => {
         <button className='bg-gray-100 py-1.5 px-3 mr-6 h-fit rounded-md border-1 border-gray-100 hover:border-gray-300'>
           <FontAwesomeIcon icon={faBell} className='text-lg' />
         </button>
-        <div className='flex items-center bg-gray-100 py-2 px-3 rounded-md border-1 border-gray-100'>
+        <div className='flex items-center py-2 px-3 rounded-md border-1 border-gray-100 hover:border-gray-200'>
           <img
             src={images.userAvatar}
             alt='user-avatar'

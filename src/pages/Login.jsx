@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AuthContext } from '~/context/AuthContext';
+import { AuthContext } from '@/contexts/AuthContext';
 import * as authService from '~/services/authService';
 import config from '~/config';
 
