@@ -16,6 +16,15 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
   faArrowRight,
   faArrowTrendDown,
   faArrowTrendUp,
@@ -41,6 +50,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts';
+import DateNavigator from '@/components/DateNavigator';
 
 const cardData = [
   {
@@ -114,7 +124,7 @@ const COLORS = [
 
 const Dashboard = () => {
   return (
-    <div className='grid grid-cols-[75%_25%] gap-5 mt-6'>
+    <div className='grid grid-cols-[75%_25%] gap-5 mt-3'>
       {/* Stats Section */}
       <div className='grid grid-cols-4 gap-5'>
         {cardData &&
@@ -568,7 +578,41 @@ const Dashboard = () => {
         </div>
 
         {/* Patient Appointment */}
-        <div>Patient Appointment</div>
+        <Card className='col-span-4'>
+          <CardHeader className='flex-row justify-between pb-5'>
+            <CardTitle className='text-lg flex items-center mb-0'>
+              Patient Appointment
+            </CardTitle>
+            <Button variant='outline' className='hover:cursor-pointer'>
+              View All
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {/* Date Navigator */}
+            <DateNavigator />
+
+            {/* Appointment Table */}
+            <Table>
+              <TableCaption>A list of your recent invoices.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className='w-[100px]'>Invoice</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Method</TableHead>
+                  <TableHead className='text-right'>Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className='font-medium'>INV001</TableCell>
+                  <TableCell>Paid</TableCell>
+                  <TableCell>Credit Card</TableCell>
+                  <TableCell className='text-right'>$250.00</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Calendar */}
