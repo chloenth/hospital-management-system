@@ -10,12 +10,6 @@
   --footer-height: 60px;
 }
 
-@layer base {
-  body {
-    @apply font-display;
-  }
-}
-
 @layer components {
   .footer-link {
     @apply block px-0.5 py-2 py-1 hover:underline hover:underline-offset-2;
@@ -55,6 +49,14 @@
 
   .sidebar-link.active {
     @apply bg-[#e9eaef] text-[#1E3A8A] drop-shadow-md;
+  }
+
+  .dialog-animate[data-state='open'] {
+    @apply !animate-in !fade-in !duration-500;
+  }
+
+  .dialog-animate[data-state='closed'] {
+    @apply !animate-in !fade-out !duration-700;
   }
 }
 
@@ -155,6 +157,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-display;
   }
 }

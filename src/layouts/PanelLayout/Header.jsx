@@ -14,7 +14,8 @@ const headings = {
   [admin.appointments]: 'Appointments',
   [admin.doctors]: 'Doctors',
   [admin.patients]: 'Patients',
-  [admin.users]: 'Users',
+  [admin.users.viewUsers]: 'Users',
+  [admin.users.addUser]: 'Add New User',
 };
 
 const Header = () => {
@@ -25,19 +26,6 @@ const Header = () => {
 
   return (
     <div className='py-6 flex justify-between items-center'>
-      {/* <div className='relative'>
-        <FontAwesomeIcon
-          icon={faMagnifyingGlass}
-          className='absolute top-3.5 left-3.5 text-sm text-gray-500'
-        />
-        <input
-          type='text'
-          name=''
-          id=''
-          placeholder='Search...'
-          className='w-sm border-1 border-gray-300 rounded-lg py-2 pl-9 text-gray-600 outline-none bg-gray-100 focus:bg-white'
-        />
-      </div> */}
       <h5 className='text-2xl text-[#243956] font-semibold'>{heading}</h5>
 
       <div className='flex items-center'>

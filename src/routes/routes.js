@@ -3,6 +3,8 @@ import { AuthLayout } from '~/layouts';
 import Login from '~/pages/Login';
 import Admin from '~/pages/admin';
 
+const adminRoutes = config.routes.admin;
+
 export const publicRoutes = [
   {
     path: config.routes.login,
@@ -13,23 +15,27 @@ export const publicRoutes = [
 
 export const privateRoutes = [
   {
-    path: config.routes.admin.dashboard,
+    path: adminRoutes.dashboard,
     component: Admin.Dashboard,
   },
   {
-    path: config.routes.admin.appointments,
+    path: adminRoutes.appointments,
     component: Admin.Appointments,
   },
   {
-    path: config.routes.admin.patients,
+    path: adminRoutes.patients,
     component: Admin.Patients,
   },
   {
-    path: config.routes.admin.doctors,
+    path: adminRoutes.doctors,
     component: Admin.Doctors,
   },
   {
-    path: config.routes.admin.users,
+    path: adminRoutes.users.viewUsers,
     component: Admin.Users,
+  },
+  {
+    path: adminRoutes.users.addUser,
+    component: Admin.AddUser,
   },
 ];

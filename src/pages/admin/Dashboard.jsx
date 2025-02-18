@@ -138,7 +138,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className='py-2 px-4'>
                 <p className='flex justify-between items-center'>
-                  <span className='text-2xl font-semibold'>
+                  <span className='text-xl font-semibold'>
                     {item.todayCount}
                   </span>
                   <span

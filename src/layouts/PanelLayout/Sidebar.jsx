@@ -53,7 +53,6 @@ const sidebarLinks = [
 const Sidebar = () => {
   const location = useLocation();
   const pathname = location.pathname;
-  console.log(pathname);
 
   return (
     <div className='p-5 min-h-screen'>
