@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -29,6 +30,9 @@ import {
 } from '@/components/ui/select';
 
 import config from '~/config';
+import * as userService from '~/services/userService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
 
 const viewUserRoute = config.routes.admin.users.viewUsers;
 
@@ -76,16 +80,10 @@ const contactInfo = [
 
 const profileInfo = [
   {
-    name: 'firstName',
-    label: 'First Name',
+    name: 'fullName',
+    label: 'Full Name',
     type: 'text',
-    placeholder: 'Enter first name...',
-  },
-  {
-    name: 'lastName',
-    label: 'Last Name',
-    type: 'text',
-    placeholder: 'Enter last name...',
+    placeholder: 'Enter full name...',
   },
   {
     name: 'dob',
@@ -107,8 +105,7 @@ const formSchema = z
     confirmPassword: z
       .string()
       .min(6, { message: 'Password must be at least 6 characters.' }),
-    firstName: z.string().min(1, { message: 'First name is required.' }),
-    lastName: z.string().min(1, { message: 'Last name is required.' }),
+    fullName: z.string().min(1, { message: 'Full name is required.' }),
     dob: z.string().refine(
       (value) => {
         const date = new Date(value);
@@ -117,6 +114,16 @@ const formSchema = z
       },
       { message: 'Date of birth must be before today.' }
     ),
+    gender: z.string().min(1, { message: 'Gender is required.' }),
+    avatar: z
+      .instanceof(File)
+      .refine((file) => file.type.startsWith('image/'), {
+        message: 'Please upload a valid image file.',
+      })
+      .refine((file) => file.size <= 100000, {
+        message: 'File size should not exceed 100KB.',
+      })
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match.',
@@ -130,25 +137,84 @@ const generateDefaultValues = () => {
   contactInfo.forEach((field) => (defaultValues[field.name] = ''));
   profileInfo.forEach((field) => (defaultValues[field.name] = ''));
   defaultValues.gender = '';
+  defaultValues.avatar = null;
 
   return defaultValues;
 };
 
 const AddUser = () => {
+  const [image, setImage] = useState(null);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: generateDefaultValues(),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log('Form submitted:', data);
+    const formData = new FormData();
+
+    const { confirmPassword, avatar, ...requestData } = data;
+    console.log('confirmPassword', confirmPassword);
+
+    formData.append(
+      'user',
+      new Blob([JSON.stringify(requestData)], { type: 'application/json' })
+    );
+    formData.append('avatar', avatar);
+
+    try {
+      const response = await userService.addUser(formData);
+      form.reset();
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Handle drag over event to allow drop
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // Handle drop event
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image')) {
+      setImage(URL.createObjectURL(file)); // Show preview
+      form.setValue('avatar', file); // Update form value with the file
+    }
+  };
+
+  // Handle file input change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image')) {
+      console.log('url: ', URL.createObjectURL(file));
+      setImage(URL.createObjectURL(file)); // Show preview
+    }
+  };
+
+  const removeFile = (e) => {
+    e.preventDefault();
+    setImage(null); // Show preview
+    form.setValue('avatar', null); // Update form value with the file
+
+    // Reset the input field value to remove the file from the input
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+      fileInput.value = ''; // This clears the file input
+    }
   };
 
   return (
     <div>
       {/* Breadcrumb */}
       <Breadcrumb>
-        <BreadcrumbList>
+        <BreadcrumbList className='text-base'>
           <BreadcrumbItem>
             <BreadcrumbLink href={viewUserRoute}>Users</BreadcrumbLink>
           </BreadcrumbItem>
@@ -160,7 +226,6 @@ const AddUser = () => {
       </Breadcrumb>
 
       {/* Add User Form */}
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -233,7 +298,7 @@ const AddUser = () => {
             <h6 className='text-xl text-gray-500 font-semibold underline underline-offset-3 decoration-1'>
               Profile Info
             </h6>
-            <div className='grid grid-cols-2 gap-x-8'>
+            <div className=''>
               {profileInfo &&
                 profileInfo.map((formField, index) => (
                   <FormField
@@ -243,9 +308,7 @@ const AddUser = () => {
                     render={({ field }) => (
                       <FormItem
                         className={`mt-10 ${
-                          formField.type === 'date'
-                            ? 'col-span-1'
-                            : 'col-span-2'
+                          formField.type === 'date' ? 'w-[70%]' : ''
                         }`}
                       >
                         <FormLabel className='text-base'>
@@ -256,7 +319,7 @@ const AddUser = () => {
                             type={formField.type}
                             placeholder={formField.placeholder}
                             {...field}
-                            className='h-10'
+                            className='h-10 grid grid-cols-1'
                           />
                         </FormControl>
                         <FormMessage />
@@ -265,11 +328,12 @@ const AddUser = () => {
                   />
                 ))}
 
+              {/* Gender */}
               <FormField
                 control={form.control}
                 name='gender'
                 render={({ field }) => (
-                  <FormItem className='mt-10'>
+                  <FormItem className='mt-10 w-[70%]'>
                     <FormLabel className='text-base'>Gender</FormLabel>
                     <FormControl>
                       <Select
@@ -277,7 +341,7 @@ const AddUser = () => {
                         defaultValue={field.value}
                       >
                         <SelectTrigger className='mt-1'>
-                          <SelectValue placeholder='Female' />
+                          <SelectValue placeholder='Please select...' />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='Female'>Female</SelectItem>
@@ -293,72 +357,78 @@ const AddUser = () => {
             </div>
           </div>
 
-          {/* Role-Specific Info Info */}
-          {/* <div className='mt-5'>
-            <h6 className='text-xl text-gray-500 font-semibold underline underline-offset-3 decoration-1'>
-              Role-Specific Info
-            </h6>
-            <Tabs defaultValue='doctor' className='mt-6 w-[400px]'>
-              <TabsList className='grid w-full grid-cols-2'>
-                <TabsTrigger value='doctor'>Doctor</TabsTrigger>
-                <TabsTrigger value='patient'>Patient</TabsTrigger>
-              </TabsList>
-              <TabsContent value='doctor'>
-                {doctorInfo &&
-                  doctorInfo.map((formField, index) => (
-                    <FormField
-                      key={index}
-                      control={form.control}
-                      name={formField.name}
-                      render={({ field }) => (
-                        <FormItem className='mt-6'>
-                          <FormLabel className='text-base'>
-                            {formField.label}
-                          </FormLabel>
-                          <FormControl className='mt-1'>
-                            <Input
-                              type={formField.type}
-                              placeholder={formField.placeholder}
-                              {...field}
-                              className='h-10'
+          {/* User Avatar */}
+          <div className='col-span-3'>
+            <FormField
+              control={form.control}
+              name='avatar'
+              render={({ field }) => (
+                <FormItem className='mt-8'>
+                  <FormLabel className='block mb-8 text-center text-xl text-gray-500 font-semibold underline underline-offset-3 decoration-1'>
+                    Avatar Upload
+                  </FormLabel>
+                  <FormControl>
+                    <div className='w-[500px] h-[400px] border-2 border-dashed border-[#aaa] m-auto flex flex-col'>
+                      <div
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
+                        className='flex-1'
+                      >
+                        {image ? (
+                          <img
+                            src={image}
+                            alt='Dropped'
+                            className='w-[100%] h-[330px] object-contain'
+                          />
+                        ) : (
+                          <div className='flex justify-center items-center flex-col h-full text-gray-500'>
+                            <FontAwesomeIcon
+                              icon={faImage}
+                              className='text-lg'
                             />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-              </TabsContent>
-              <TabsContent value='patient'>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Password</CardTitle>
-                    <CardDescription>
-                      Change  password here. After saving, you'll be logged
-                      out.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className='space-y-2'>
-                    <div className='space-y-1'>
-                      <Label htmlFor='current'>Current password</Label>
-                      <Input id='current' type='password' />
-                    </div>
-                    <div className='space-y-1'>
-                      <Label htmlFor='new'>New password</Label>
-                      <Input id='new' type='password' />
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button>Save password</Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div> */}
+                            <p className='mt-3'>Image preview</p>
+                            <p className='mt-0.5'>Drag and drop the image...</p>
+                            <p className='mt-0.5'>
+                              File size should not exceed 100KB...
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      {/* File input to allow users to select an image */}
+                      <div className='flex p-4 border-t border-gray-300 justify-between'>
+                        <Button
+                          variant='outline'
+                          type='button'
+                          onClick={removeFile}
+                          disabled={!image}
+                          className='text-base hover:cursor-pointer hover:opacity-90'
+                        >
+                          Remove image
+                        </Button>
 
+                        <Input
+                          id='fileInput'
+                          type='file'
+                          accept='image/*'
+                          onChange={(event) => {
+                            handleFileChange(event); // Custom function
+                            field.onChange(event.target.files[0]); // React Hook Form update
+                          }}
+                          className='w-[200px] bg-blue-200 border border-gray-300 hover:cursor-pointer hover:opacity-90'
+                        />
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Reset - Submit button */}
           <div className='col-span-3 flex justify-between mt-8'>
             <Button
-              type='submit'
+              type='button'
               className='px-10 py-4 text-base bg-red-800 hover:cursor-pointer hover:bg-red-800 hover:opacity-90'
               onClick={() => form.reset()}
             >

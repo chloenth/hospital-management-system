@@ -3,9 +3,9 @@ import httpRequest from '~/utils/httpRequest';
 
 export const logIn = async (formData) => {
   try {
-    const response = await httpRequest.post(config.API.LOGIN, formData);
+    const res = await httpRequest.post(config.API.LOGIN, formData);
 
-    return response.data;
+    return res.data;
   } catch (error) {
     console.error(error);
   }
