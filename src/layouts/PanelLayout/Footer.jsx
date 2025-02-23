@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className='border-t border-solid border-gray-300 mt-20'>
+    <footer className=''>
       <div className='text-xs sm:text-sm flex flex-col sm:flex-row justify-around text-gray-500 items-center w-full sm:w-inner min-h-[60px] m-auto py-2 sm:py-0'>
         <a href='' className='footer-link'>
           Help Center

@@ -28,11 +28,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import config from '~/config';
 import * as userService from '~/services/userService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCircleCheck,
+  faCircleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 
 const viewUserRoute = config.routes.admin.users.viewUsers;
 
@@ -92,6 +97,13 @@ const profileInfo = [
   },
 ];
 
+const ALERT = {
+  SHOW_SUCCESSFUL: 'Show successful alert',
+  REMOVE_SUCCESSFUL: 'Remove successful alert',
+  SHOW_FAILED: 'Show failed alert',
+  REMOVE_FAILED: 'Show failed alert',
+};
+
 // 🛠 Define validation schema for multiple fields
 const formSchema = z
   .object({
@@ -144,6 +156,7 @@ const generateDefaultValues = () => {
 
 const AddUser = () => {
   const [image, setImage] = useState(null);
+  const [alert, setAlert] = useState('');
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -165,11 +178,29 @@ const AddUser = () => {
 
     try {
       const response = await userService.addUser(formData);
-      form.reset();
 
-      console.log(response);
+      if (response.code === 1000) {
+        setAlert(ALERT.SHOW_SUCCESSFUL);
+        form.reset();
+        removeFile();
+        form.setValue('gender', '');
+
+        setTimeout(() => {
+          setAlert(ALERT.REMOVE_SUCCESSFUL);
+        }, 3000);
+
+        console.log(response);
+      } else {
+        setAlert(ALERT.FAILED);
+
+        setTimeout(() => {
+          setAlert(ALERT.REMOVE_FAILED);
+        }, 3000);
+      }
     } catch (error) {
       console.error(error);
+      setAlert(ALERT.FAILED);
+      setTimeout(() => setAlert(''), 2500);
     }
   };
 
@@ -198,8 +229,7 @@ const AddUser = () => {
     }
   };
 
-  const removeFile = (e) => {
-    e.preventDefault();
+  const removeFile = () => {
     setImage(null); // Show preview
     form.setValue('avatar', null); // Update form value with the file
 
@@ -252,7 +282,7 @@ const AddUser = () => {
                           type={formField.type}
                           placeholder={formField.placeholder}
                           {...field}
-                          className='h-10'
+                          className='h-10 !text-base'
                         />
                       </FormControl>
                       <FormMessage />
@@ -283,7 +313,7 @@ const AddUser = () => {
                           type={formField.type}
                           placeholder={formField.placeholder}
                           {...field}
-                          className='h-10'
+                          className='h-10 !text-base'
                         />
                       </FormControl>
                       <FormMessage />
@@ -319,7 +349,7 @@ const AddUser = () => {
                             type={formField.type}
                             placeholder={formField.placeholder}
                             {...field}
-                            className='h-10 grid grid-cols-1'
+                            className='h-10 !text-base grid grid-cols-1'
                           />
                         </FormControl>
                         <FormMessage />
@@ -340,13 +370,19 @@ const AddUser = () => {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className='mt-1'>
+                        <SelectTrigger className='mt-1 text-base'>
                           <SelectValue placeholder='Please select...' />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='Female'>Female</SelectItem>
-                          <SelectItem value='Male'>Male</SelectItem>
-                          <SelectItem value='Other'>Other</SelectItem>
+                          <SelectItem value='Female' className='text-base'>
+                            Female
+                          </SelectItem>
+                          <SelectItem value='Male' className='text-base'>
+                            Male
+                          </SelectItem>
+                          <SelectItem value='Other' className='text-base'>
+                            Other
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -444,6 +480,44 @@ const AddUser = () => {
           </div>
         </form>
       </Form>
+
+      {/* Successful Alert */}
+      <Alert
+        className={`fixed top-10 w-[400px] right-4 bg-green-100 border-gray-200 shadow-md ${
+          alert === ALERT.SHOW_SUCCESSFUL
+            ? 'block animate-slideIn'
+            : alert === ALERT.REMOVE_SUCCESSFUL
+            ? 'animate-slideOut'
+            : 'hidden'
+        }`}
+      >
+        <FontAwesomeIcon icon={faCircleCheck} className='text-lg' />
+        <AlertTitle className='text-lg font-semibold text-green-700 tracking-wide !pl-10'>
+          Successfully!
+        </AlertTitle>
+        <AlertDescription className='text-base text-green-700 tracking-wide !pl-10'>
+          Account created successfully!
+        </AlertDescription>
+      </Alert>
+
+      {/* Failed Alert */}
+      <Alert
+        className={`fixed top-10 w-[400px] right-4 bg-red-200 border-gray-200 shadow-md ${
+          alert === ALERT.FAILED
+            ? 'block animate-slideIn'
+            : alert === ALERT.REMOVE_FAILED
+            ? 'animate-slideOut'
+            : 'hidden'
+        }`}
+      >
+        <FontAwesomeIcon icon={faCircleExclamation} className='text-xl' />
+        <AlertTitle className='text-lg font-semibold text-red-700 tracking-wide !pl-10'>
+          Failed!
+        </AlertTitle>
+        <AlertDescription className='text-base text-red-700 tracking-wide !pl-10'>
+          Oops! Something went wrong. Please try again later.
+        </AlertDescription>
+      </Alert>
     </div>
   );
 };

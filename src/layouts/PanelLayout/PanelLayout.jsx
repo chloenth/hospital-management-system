@@ -7,9 +7,11 @@ const PanelLayout = ({ children }) => {
   return (
     <div className='flex'>
       <Sidebar />
-      <div className='flex-1 bg-[#fafafb] rounded-3xl m-4 px-6'>
-        <Header />
-        {children}
+      <div className='flex-1'>
+        <div className='flex-1 bg-[#fafafb] rounded-3xl m-4 px-6 pt-6 pb-10'>
+          <Header />
+          {children}
+        </div>
         <Footer />
       </div>
     </div>

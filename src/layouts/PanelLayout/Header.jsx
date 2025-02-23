@@ -25,7 +25,7 @@ const Header = () => {
   const heading = useMemo(() => headings[pathname] || 'Unknown', [pathname]);
 
   return (
-    <div className='py-6 flex justify-between items-center'>
+    <div className='mb-8 flex justify-between items-center'>
       <h5 className='text-2xl text-[#243956] font-semibold'>{heading}</h5>
 
       <div className='flex items-center'>
