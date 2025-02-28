@@ -30,14 +30,15 @@ import {
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-import config from '~/config';
-import * as userService from '~/services/userService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import {
   faCircleCheck,
   faCircleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
+
+import config from '~/config';
+import * as userService from '~/services/userService';
 
 const viewUserRoute = config.routes.admin.users.viewUsers;
 
@@ -71,7 +72,7 @@ const contactInfo = [
   },
   {
     name: 'phoneNumber',
-    type: 'tel',
+    type: 'number',
     label: 'Phone Number',
     placeholder: 'Enter phone number...',
   },
@@ -136,6 +137,8 @@ const formSchema = z
         message: 'File size should not exceed 100KB.',
       })
       .optional(),
+    phoneNumber: z.string().optional(),
+    address: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match.',

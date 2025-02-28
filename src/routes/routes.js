@@ -38,4 +38,8 @@ export const privateRoutes = [
     path: adminRoutes.users.addUser,
     component: Admin.AddUser,
   },
+  {
+    path: `${adminRoutes.users.editUser(':userId')}`, // Define the userId as a dynamic segment
+    component: Admin.EditUser,
+  },
 ];

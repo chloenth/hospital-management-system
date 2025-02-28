@@ -11,31 +11,42 @@ export const addUser = async (formData) => {
   }
 };
 
-export const getAllUsersWithProfile = async (page, sortBy, order, pageSize) => {
-  const params = {};
+export const getAllUsersWithProfile = async (
+  page,
+  sortBy,
+  order,
+  size,
+  searchText,
+  gender,
+  role
+) => {
+  const params = {
+    ...(page && { page }),
+    ...(sortBy && { sortBy }),
+    ...(order && { order }),
+    ...(size && { size }),
+    ...(searchText && { searchText }),
+    ...(gender && { gender }),
+    ...(role && { role }),
+  };
 
-  if (page != null) {
-    // Only add 'page' if it's not null or undefined
-    params.page = page;
-  }
-
-  if (sortBy != null) {
-    // Only add 'sortBy' if it's not null or undefined
-    params.sortBy = sortBy;
-  }
-
-  if (order != null) {
-    // Only add 'order' if it's not null or undefined
-    params.order = order;
-  }
-
-  if (pageSize != null) {
-    params.size = pageSize;
-  }
+  console.log('params: ', params);
 
   try {
     const res = await httpRequest.get(config.API.GET_USERS, {
       params,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const changeUsername = async (userId, username) => {
+  try {
+    const res = await httpRequest.put(config.API.CHANGE_USERNAME(userId), {
+      username,
     });
 
     return res.data;

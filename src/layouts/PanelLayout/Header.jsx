@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { useMemo } from 'react';
 import { faAngleDown, faMoon } from '@fortawesome/free-solid-svg-icons';
@@ -21,8 +21,15 @@ const headings = {
 const Header = () => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { userId } = useParams();
 
-  const heading = useMemo(() => headings[pathname] || 'Unknown', [pathname]);
+  const heading = useMemo(() => {
+    if (userId && pathname.includes(userId)) {
+      return 'Edit User';
+    }
+
+    return headings[pathname] || 'Unknown';
+  }, [pathname]);
 
   return (
     <div className='mb-8 flex justify-between items-center'>

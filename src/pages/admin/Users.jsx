@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -32,10 +32,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 import {
   faArrowLeft,
   faArrowRight,
+  faFilter,
   faMagnifyingGlass,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
@@ -43,7 +45,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPenToSquare,
   faSquareCaretDown,
-  faSquareCaretLeft,
   faTrashCan,
 } from '@fortawesome/free-regular-svg-icons';
 
@@ -52,12 +53,12 @@ import * as userService from '~/services/userService';
 import LoadingSpinner from '~/components/LoadingSpinner';
 import { useDebounce } from '@/hooks';
 
-const addUser = config.routes.admin.users.addUser;
+const userRoutes = config.routes.admin.users;
 
 const headerFields = [
   {
     title: 'Full Name',
-    name: 'full_name',
+    name: 'fullname',
   },
   {
     title: 'Username',
@@ -81,7 +82,7 @@ const headerFields = [
   },
   {
     title: 'Phone Number',
-    name: 'phone_number',
+    name: 'phoneNumber',
   },
   {
     title: 'Address',
@@ -102,50 +103,65 @@ const Users = () => {
   const [pageSizeInput, setPageSizeInput] = useState(5);
   const [invalidPageSize, setInvalidPageSize] = useState(false);
 
+  const [searchInput, setSearchInput] = useState('');
+  const [gender, setGender] = useState('');
+  const [role, setRole] = useState('');
+
   const location = useLocation();
+  const navigate = useNavigate();
   const pathnameSearch = location.search;
+  const queryParams = new URLSearchParams(pathnameSearch);
 
   const { currentPage, totalPages, totalRecords } = pageData;
-  const debouncedPageSize = useDebounce(pageSizeInput, 500);
+  const debouncedPageSize = useDebounce(pageSizeInput, 800);
+
+  const debouncedSearchInput = useDebounce(searchInput, 800);
+
+  const searchText = useMemo(() => {
+    return debouncedSearchInput.trim();
+  }, [debouncedSearchInput]);
+
+  const pageSize = useMemo(() => {
+    if (
+      !debouncedPageSize ||
+      debouncedPageSize < 0 ||
+      debouncedPageSize > totalRecords
+    ) {
+      setInvalidPageSize(true);
+      return null;
+    }
+
+    setInvalidPageSize(false);
+
+    return String(debouncedPageSize).trim();
+  }, [debouncedPageSize]);
 
   const page = useMemo(() => {
-    const queryParams = new URLSearchParams(pathnameSearch);
     return queryParams.get('page');
-  }, [pathnameSearch]);
+  }, [pathnameSearch, debouncedPageSize]);
 
   const sortBy = useMemo(() => {
-    const queryParams = new URLSearchParams(pathnameSearch);
     return queryParams.get('sortBy');
   }, [pathnameSearch]);
 
   const order = useMemo(() => {
-    const queryParams = new URLSearchParams(pathnameSearch);
     return queryParams.get('order');
   }, [pathnameSearch]);
 
-  useEffect(() => {
-    if (
-      !debouncedPageSize ||
-      debouncedPageSize <= 0 ||
-      debouncedPageSize > totalRecords
-    ) {
-      setInvalidPageSize(true);
-      return;
-    }
-
-    setInvalidPageSize(false);
-    let pageSize = String(debouncedPageSize).trim();
-
-    const fetchUsers = async (page, sortBy, order, pageSize) => {
+  const fetchUsers = useCallback(
+    async (page, sortBy, order, pageSize, searchText, gender, role) => {
       try {
         const response = await userService.getAllUsersWithProfile(
           page,
           sortBy,
           order,
-          pageSize
+          pageSize,
+          searchText,
+          gender,
+          role
         );
 
-        setUsers(response.result.userProfileResponse);
+        setUsers(response.result.searchResults);
         setPageData(response.result.pageDataResponse);
 
         const { startPage, endPage } = response.result.pageDataResponse;
@@ -156,18 +172,32 @@ const Users = () => {
         }
 
         setCurrentPageList(newPageList);
-
-        console.log('newPageList: ', newPageList);
-
         setLoading(false);
         console.log(response);
       } catch (error) {
         console.error(error);
       }
-    };
+    },
+    []
+  );
 
-    fetchUsers(page, sortBy, order, pageSize);
-  }, [page, sortBy, order, debouncedPageSize]);
+  useEffect(() => {
+    console.log('run in useEffect pageSize');
+    if (!page || page == 1) {
+      fetchUsers(page, sortBy, order, pageSize, searchText, gender, role);
+    } else {
+      queryParams.delete('page');
+      navigate({
+        pathname: location.pathname,
+        search: queryParams.toString(),
+      });
+    }
+  }, [pageSize, searchText, gender, role]);
+
+  useEffect(() => {
+    console.log('run in useEffect normal');
+    fetchUsers(page, sortBy, order, pageSize, searchText, gender, role);
+  }, [page, sortBy, order]);
 
   const handleKeyDown = (e) => {
     if (e.key === '-' || e.key === 'e') {
@@ -175,25 +205,121 @@ const Users = () => {
     }
   };
 
+  const handleReset = () => {
+    setGender('');
+    setRole('');
+    setSearchInput('');
+  };
+
   return (
     <div>
       <div className='flex justify-between'>
-        <div className='relative'>
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            className='absolute top-3 left-3.5 text-xs text-gray-500'
-          />
-          <input
-            type='text'
-            name=''
-            id=''
-            placeholder='Search...'
-            className='w-sm tracking-wider border-1 border-gray-300 rounded-lg py-1.5 pl-8.5 text-gray-600 outline-none bg-gray-100 focus:bg-white'
-          />
+        <div className='flex'>
+          {/* Search Input */}
+          <div className='relative'>
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              className='absolute top-3 left-3.5 text-xs text-gray-500'
+            />
+            <input
+              type='text'
+              name=''
+              id=''
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder='Search...'
+              className='w-sm tracking-wide border-1 border-gray-300 rounded-lg py-1.5 pl-8.5 text-gray-600 outline-none bg-gray-100 focus:bg-white'
+            />
+          </div>
+
+          {/* Gender Input */}
+          <Select value={gender} onValueChange={(value) => setGender(value)}>
+            <SelectTrigger className='ml-6 w-[180px] focus:ring-0 hover:cursor-pointer text-base'>
+              <FontAwesomeIcon
+                icon={faFilter}
+                className=' text-gray-500 text-sm'
+              />
+              Gender:
+              <SelectValue placeholder='...' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                value='all'
+                className='text-base hover:cursor-pointer'
+              >
+                All
+              </SelectItem>
+              <SelectItem
+                value='male'
+                className='text-base hover:cursor-pointer'
+              >
+                Male
+              </SelectItem>
+              <SelectItem
+                value='female'
+                className='text-base hover:cursor-pointer'
+              >
+                Female
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Role Input */}
+          <Select value={role} onValueChange={(value) => setRole(value)}>
+            <SelectTrigger className='ml-6 w-[160px] focus:ring-0 hover:cursor-pointer text-base'>
+              <FontAwesomeIcon
+                icon={faFilter}
+                className='text-gray-500 text-sm'
+              />
+              Role:
+              <SelectValue placeholder='...' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                value='ALL'
+                className='text-base hover:cursor-pointer'
+              >
+                All
+              </SelectItem>
+              <SelectItem
+                value='ADMIN'
+                className='text-base hover:cursor-pointer'
+              >
+                Admin
+              </SelectItem>
+              <SelectItem
+                value='USER'
+                className='text-base hover:cursor-pointer'
+              >
+                User
+              </SelectItem>
+              <SelectItem
+                value='DOCTOR'
+                className='text-base hover:cursor-pointer'
+              >
+                Doctor
+              </SelectItem>
+              <SelectItem
+                value='PATIENT'
+                className='text-base hover:cursor-pointer'
+              >
+                Patient
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Button Reset */}
+          <Button
+            className='ml-6 text-base hover:cursor-pointer'
+            onClick={handleReset}
+          >
+            Reset
+          </Button>
         </div>
 
+        {/* Add User button */}
         <Link
-          to={addUser}
+          to={userRoutes.addUser}
           className={`${buttonVariants({
             variant: 'primary',
           })} bg-[#243956] text-base text-white !px-3 hover:cursor-pointer hover:opacity-90 hover:bg-[#243956]`}
@@ -215,7 +341,9 @@ const Users = () => {
                 headerFields.map((field, index) => (
                   <TableHead key={index} className='font-semibold'>
                     {field.title}
-                    {field.name !== 'action' && field.name !== 'roles' ? (
+                    {field.name !== 'action' &&
+                    field.name !== 'roles' &&
+                    field.name !== 'phoneNumber' ? (
                       <DropdownMenu>
                         <DropdownMenuTrigger className='outline-0'>
                           <FontAwesomeIcon
@@ -316,13 +444,18 @@ const Users = () => {
                     )}
                   </TableCell>
                   <TableCell>
-                    <FontAwesomeIcon
-                      icon={faPenToSquare}
-                      className='hover:cursor-pointer hover:scale-125'
-                    />
+                    {/* Edit row */}
+                    <Link to={userRoutes.editUser(user.id)} state={{ user }}>
+                      <FontAwesomeIcon
+                        icon={faPenToSquare}
+                        className='hover:scale-125 hover:cursor-pointer'
+                      />
+                    </Link>
+
+                    {/* Delete row */}
                     <FontAwesomeIcon
                       icon={faTrashCan}
-                      className='ml-4 hover:cursor-pointer hover:scale-110'
+                      className='ml-8 hover:cursor-pointer hover:scale-110'
                     />
                   </TableCell>
                 </TableRow>

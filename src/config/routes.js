@@ -8,6 +8,7 @@ const admin = {
   users: {
     viewUsers: `${adminBaseRoute}/users`,
     addUser: `${adminBaseRoute}/users/add-new`,
+    editUser: (userId) => `${adminBaseRoute}/users/${userId}/edit-user`,
   },
 };
 
