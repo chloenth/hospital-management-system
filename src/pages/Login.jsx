@@ -29,7 +29,7 @@ const Login = () => {
     try {
       const response = await authService.logIn(formData);
       if (!response) {
-        navigate('login');
+        navigate('/login');
       }
       setIsAuthenticated(true);
       const role = response.result.roles[0].name;

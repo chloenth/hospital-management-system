@@ -164,6 +164,8 @@ const Users = () => {
         setUsers(response.result.searchResults);
         setPageData(response.result.pageDataResponse);
 
+        console.log('dob: ', response.result.searchResults.dob);
+
         const { startPage, endPage } = response.result.pageDataResponse;
         const newPageList = [];
 

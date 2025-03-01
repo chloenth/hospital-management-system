@@ -4,7 +4,7 @@ import Doctors from './Doctors';
 import Users from './Users';
 import Appointments from './Appointments';
 import AddUser from './AddUser';
-import EditUser from './EditUser';
+import EditUser from './edit-users/EditUser';
 
 const Admin = {
   Dashboard,

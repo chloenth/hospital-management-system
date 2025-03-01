@@ -129,14 +129,19 @@ const formSchema = z
     ),
     gender: z.string().min(1, { message: 'Gender is required.' }),
     avatar: z
-      .instanceof(File)
-      .refine((file) => file.type.startsWith('image/'), {
-        message: 'Please upload a valid image file.',
-      })
-      .refine((file) => file.size <= 100000, {
-        message: 'File size should not exceed 100KB.',
-      })
-      .optional(),
+      .union([
+        z
+          .instanceof(File)
+          .refine((file) => file.type.startsWith('image/'), {
+            message: 'Please upload a valid image file.',
+          })
+          .refine((file) => file.size <= 100000, {
+            message: 'File size should not exceed 100KB.',
+          }),
+        z.undefined(), // This allows avatar to be undefined
+        z.null(), // This allows avatar to be null
+      ])
+      .optional(), // Make avatar optional
     phoneNumber: z.string().optional(),
     address: z.string().optional(),
   })
