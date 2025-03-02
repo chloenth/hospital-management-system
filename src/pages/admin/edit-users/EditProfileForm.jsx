@@ -231,7 +231,7 @@ const EditProfileForm = ({ profile }) => {
             <FormField
               control={form.control}
               name='avatar'
-              render={({ field }) => (
+              render={() => (
                 <FormItem className=''>
                   {/* <FormLabel className='block mb-8 text-center text-xl text-gray-500 font-semibold underline underline-offset-3 decoration-1'>
                     Avatar Upload

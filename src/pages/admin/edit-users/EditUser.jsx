@@ -38,43 +38,6 @@ const EditUser = () => {
     fetchUser(userId);
   }, []);
 
-  // const handleToast = (title, description) => {
-  //   toast(title, {
-  //     description,
-  //   });
-  // };
-
-  // const handleUsernameSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log('edited username submit: ', username);
-  //   try {
-  //     const response = await userService.changeUsername(id, username);
-
-  //     console.log('response: ', response);
-
-  //     if (response && response.code === 1000) {
-  //       user.username = username;
-  //       setIsUsernameDisabled(true);
-  //       handleToast(
-  //         'Username updated successfully!',
-  //         new Date().toLocaleString('en-US', {
-  //           weekday: 'long',
-  //           year: 'numeric',
-  //           month: 'long',
-  //           day: 'numeric',
-  //           hour: '2-digit',
-  //           minute: '2-digit',
-  //           second: '2-digit',
-  //         })
-  //       );
-  //       return;
-  //     }
-  //     setIsUsernameFailed(!isUsernameFailed);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   return (
     <div>
       {/* Breadcrumb */}
@@ -85,7 +48,7 @@ const EditUser = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Fullname</BreadcrumbPage>
+            <BreadcrumbPage>{user.fullName}</BreadcrumbPage>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
