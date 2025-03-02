@@ -4,7 +4,8 @@ const profile_prefix = '/profile';
 
 const API = {
   LOGIN: `${identity_prefix}/auth/token`,
-  MY_INFO: `${identity_prefix}/users/my-info`,
+  LOGOUT: `${identity_prefix}/auth/logout`,
+  GET_MY_INFO: `${search_prefix}/users/my-info`,
   ADD_USER: `${identity_prefix}/users/registration`,
   GET_USERS: `${search_prefix}/users`,
   CHANGE_USERNAME: (userId) =>

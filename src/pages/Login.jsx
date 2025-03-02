@@ -27,13 +27,25 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await authService.logIn(formData);
+      const response = await authService.login(formData);
       if (!response) {
         navigate('/login');
       }
       setIsAuthenticated(true);
-      const role = response.result.roles[0].name;
-      if (role === config.roles.ADMIN) {
+
+      const myInfoResponse = await authService.getMyInfo();
+      console.log('myInfoResponse: ', myInfoResponse);
+
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify({
+          username: myInfoResponse.result?.username,
+          fullName: myInfoResponse.result?.fullName,
+          roles: myInfoResponse.result?.roles,
+        })
+      );
+
+      if (myInfoResponse.result.roles[0].name === config.roles.ADMIN) {
         navigate('/admin');
       }
     } catch (error) {
