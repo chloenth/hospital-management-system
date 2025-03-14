@@ -58,7 +58,7 @@ const userRoutes = config.routes.admin.users;
 const headerFields = [
   {
     title: 'Full Name',
-    name: 'fullname',
+    name: 'fullName',
   },
   {
     title: 'Username',
