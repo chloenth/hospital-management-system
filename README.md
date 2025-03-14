@@ -4,7 +4,7 @@ Hospital Management System is a web-based application built with React to manage
 
 ## 2️⃣ Features Overviews
 
-### Core Functionalities
+### Core Functionalities:
 
 - **🏥 Patient Management** – Add, update, delete, and view patient details.
 - **👩‍⚕️ Doctor Schedules** – View available doctors and their appointment slots.
@@ -12,7 +12,7 @@ Hospital Management System is a web-based application built with React to manage
 - **💰 Billing System** – Generate and view invoices for patient treatments.
 - **📊 Dashboard** – View an overview of hospital operations and patient statistics.
 
-### Authentication
+### Authentication:
 
 1. **Store API Token in Cookies**:
 
@@ -69,23 +69,15 @@ npm run dev
 
 ## 5️⃣ Folder Structure
 
-📦 hospital-management
-┣ 📂 src
-┃ ┣ 📂 components # Reusable UI components
-┃ ┣ 📂 pages # Main pages like Login, Admin, Doctors
-┃ ┣ 📂 assets
-┃ ┃ ┣ 📂 images # Images and icons
-┃ ┃ 📂 config # 🔧 Application configuration (routes, API, roles)
-┃ ┃ ┣ 📜 apis.js # Stores API endpoint constants for making network requests.
-┃ ┃ ┣ 📜 roles.js # Manages user roles and permissions.
-┃ ┃ ┣ 📜 routes.js # Defines all application routes for navigation.
-┃ ┃ ┣ 📜 index.js # Centralized export file to manage and import configurations easily.
-┃ ┣ 📂 hooks # Custom React hooks
-┃ ┣ 📂 contexts # Context API for state management
-┃ ┣ 📂 routes # Application routing (public & private routes with associated components and layouts)
-┃ ┣ 📂 services # API calls and business logic (e.g., login, logout, getMyInfo)
-┃ ┣ 📂 utils
-┃ ┃ ┣ 📜 httpRequest.js # Defines an Axios instance with automatic token refresh functionality
-┃ ┗ 📜 App.js # Main component
-┣ 📜 package.json # Dependencies
-┣ 📜 README.md # Documentation
+- **`src/`**: Contains all the source code of the project.
+  - **`components/`**: Holds reusable UI components.
+  - **`pages/`**: Contains the main pages such as Login, Admin, Doctors.
+  - **`assets/`**: Stores images and icons.
+  - **`config/`**: Contains configuration files for routes, APIs, and roles.
+  - **`hooks/`**: Contains custom React hooks.
+  - **`contexts/`**: Contains Context API setup for managing global state.
+  - **`routes/`**: Defines application routing (public and private routes with layouts).
+  - **`services/`**: Handles API calls and business logic like login, logout, and fetching user info.
+  - **`utils/`**: Contains utility functions like HTTP request handling.
+- **`package.json`**: Manages project dependencies.
+- **`README.md`**: This file contains documentation.
